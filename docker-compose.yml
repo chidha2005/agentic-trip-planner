@@ -1,0 +1,28 @@
+services:
+  postgres:
+    image: pgvector/pgvector:pg16
+    container_name: agentic-postgres
+    environment:
+      POSTGRES_DB: agentic_ai
+      POSTGRES_USER: agentic_user
+      POSTGRES_PASSWORD: agentic_pass
+    ports:
+      - "5432:5432"
+    volumes:
+      - agentic_pg_data:/var/lib/postgresql/data
+  app:
+    build: .
+    container_name: agentic-trip-planner
+    depends_on:
+      - postgres
+    ports:
+      - "8080:8080"
+    environment:
+      GOOGLE_API_KEY: ${GOOGLE_API_KEY}
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: agentic_ai
+      DB_USERNAME: agentic_user
+      DB_PASSWORD: agentic_pass
+volumes:
+  agentic_pg_data:

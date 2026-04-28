@@ -1,0 +1,36 @@
+spring:
+  application:
+    name: agentic-trip-planner
+  ai:
+    google:
+      genai:
+        api-key: ${GOOGLE_API_KEY}
+        chat:
+          options:
+            model: gemini-2.0-flash
+            temperature: 0.2
+  datasource:
+    url: jdbc:postgresql://${DB_HOST:postgres}:${DB_PORT:5432}/${DB_NAME:agentic_ai}
+    username: ${DB_USERNAME:agentic_user}
+    password: ${DB_PASSWORD:agentic_pass}
+  flyway:
+    enabled: true
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
+  endpoint:
+    health:
+      show-details: always
+resilience4j:
+  retry:
+    instances:
+      geminiRetry:
+        max-attempts: 3
+        wait-duration: 2s
+  circuitbreaker:
+    instances:
+      geminiCircuitBreaker:
+        failure-rate-threshold: 50
+        sliding-window-size: 10
